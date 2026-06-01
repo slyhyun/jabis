@@ -2,6 +2,9 @@
 .env
 .env.local
 
+# pyenv
+.python-version
+
 # Python
 __pycache__/
 *.py[cod]
