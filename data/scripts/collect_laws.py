@@ -42,7 +42,7 @@ TARGET_LAWS = [
     },
     {
         "name": "표시광고법",
-        "query": "표시광고",
+        "query": "표시·광고의 공정화에 관한 법률",
         "filename": "fair_display_advertising.json"
     },
     {
@@ -155,7 +155,7 @@ def fetch_law_detail(mst: str) :
         "OC": API_KEY,
         "target": "law",
         "type": "XML",
-        "MST": mst,
+        "ID": mst,
     }
     res = requests.get(BASE_URL, params=params, verify=False)
     #res.encoding = "utf-8"
