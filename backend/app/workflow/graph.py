@@ -2,6 +2,8 @@ from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, START, END
 import operator
 
+from backend.app.agents.agent2_spec import run_agent2
+
 
 # ============================================================
 # State 정의
@@ -52,10 +54,13 @@ def agent1_regulation_search(state: JABISState) -> dict:
 
 
 def agent2_spec_verify(state: JABISState) -> dict:
-    """Agent 2: 스펙 교차 검증 (MCP #2)"""
-    print(f"[Agent 2] 스펙 교차 검증 시작")
-    # TODO: Mock 상품 DB MCP 호출 + 광고 카피 숫자/조건 추출 비교
-    return {"spec_violations": []}
+    """Agent 2: 스펙 교차 검증"""
+    result = run_agent2(
+        ad_copy=state["ad_copy"],
+        product_type=state["product_type"],
+        product_id=state["product_id"],
+    )
+    return {"spec_violations": result["spec_violations"]}
 
 
 def agent3_disclosure_check(state: JABISState) -> dict:
