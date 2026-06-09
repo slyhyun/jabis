@@ -3,6 +3,7 @@ from langgraph.graph import StateGraph, START, END
 import operator
 
 from backend.app.agents.agent2_spec import run_agent2
+from backend.app.agents.agent3_disclosure import run_agent3
 
 
 # ============================================================
@@ -65,9 +66,11 @@ def agent2_spec_verify(state: JABISState) -> dict:
 
 def agent3_disclosure_check(state: JABISState) -> dict:
     """Agent 3: 의무표시 체크 (Rule Engine)"""
-    print(f"[Agent 3] 의무표시 체크 시작")
-    # TODO: Rule Engine 적용 (정규식 + 키워드 매칭)
-    return {"disclosure_violations": []}
+    result = run_agent3(
+        ad_copy=state["ad_copy"],
+        product_type=state["product_type"],
+    )
+    return {"disclosure_violations": result["disclosure_violations"]}
 
 
 def agent4_risk_assessment(state: JABISState) -> dict:
