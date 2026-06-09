@@ -4,6 +4,7 @@ import operator
 
 from backend.app.agents.agent2_spec import run_agent2
 from backend.app.agents.agent3_disclosure import run_agent3
+from backend.app.agents.agent4_judgment import run_agent4
 
 
 # ============================================================
@@ -75,11 +76,16 @@ def agent3_disclosure_check(state: JABISState) -> dict:
 
 def agent4_risk_assessment(state: JABISState) -> dict:
     """Agent 4: 종합 위험도 판단 (LLM)"""
-    print(f"[Agent 4] 종합 위험도 판단 시작")
-    # TODO: 규제/스펙/의무표시 위반 통합 후 LLM으로 위험도 판단
+    result = run_agent4(
+        ad_copy=state["ad_copy"],
+        product_type=state["product_type"],
+        regulation_results=state.get("regulation_results", []),
+        spec_violations=state.get("spec_violations", []),
+        disclosure_violations=state.get("disclosure_violations", []),
+    )
     return {
-        "risk_level": "LOW",
-        "risk_summary": "위반 사항 없음 (임시값)",
+        "risk_level": result["risk_level"],
+        "risk_summary": result["risk_summary"],
     }
 
 
