@@ -6,6 +6,7 @@ from backend.app.agents.agent2_spec import run_agent2
 from backend.app.agents.agent3_disclosure import run_agent3
 from backend.app.agents.agent4_judgment import run_agent4
 from backend.app.agents.agent5_revision import run_agent5
+from backend.app.agents.agent6_verification import run_agent6
 
 
 # ============================================================
@@ -103,12 +104,15 @@ def agent5_revise_copy(state: JABISState) -> dict:
 
 def agent6_self_verify(state: JABISState) -> dict:
     """Agent 6: 자기 검증 루프 (최대 3회)"""
-    count = state.get("verification_count", 0) + 1
-    print(f"[Agent 6] 자기 검증 {count}회차")
-    # TODO: 수정안이 규제를 준수하는지 재검토
+    result = run_agent6(
+        revised_copy=state.get("revised_copy", state["ad_copy"]),
+        product_type=state["product_type"],
+        product_id=state["product_id"],
+        verification_count=state.get("verification_count", 0),
+    )
     return {
-        "verification_count": count,
-        "is_verified": True,  # 임시로 통과 처리
+        "verification_count": result["verification_count"],
+        "is_verified": result["is_verified"],
     }
 
 
