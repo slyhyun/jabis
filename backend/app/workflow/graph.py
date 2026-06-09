@@ -5,6 +5,7 @@ import operator
 from backend.app.agents.agent2_spec import run_agent2
 from backend.app.agents.agent3_disclosure import run_agent3
 from backend.app.agents.agent4_judgment import run_agent4
+from backend.app.agents.agent5_revision import run_agent5
 
 
 # ============================================================
@@ -91,9 +92,13 @@ def agent4_risk_assessment(state: JABISState) -> dict:
 
 def agent5_revise_copy(state: JABISState) -> dict:
     """Agent 5: 수정안 생성 (LLM)"""
-    print(f"[Agent 5] 수정안 생성 시작")
-    # TODO: 위반 항목 기반 LLM 수정안 생성
-    return {"revised_copy": state["ad_copy"]}
+    result = run_agent5(
+        ad_copy=state["ad_copy"],
+        product_type=state["product_type"],
+        all_violations=state.get("spec_violations", []) + state.get("disclosure_violations", []),
+        risk_level=state.get("risk_level", "LOW"),
+    )
+    return {"revised_copy": result["revised_copy"]}
 
 
 def agent6_self_verify(state: JABISState) -> dict:
