@@ -7,6 +7,7 @@ from backend.app.agents.agent3_disclosure import run_agent3
 from backend.app.agents.agent4_judgment import run_agent4
 from backend.app.agents.agent5_revision import run_agent5
 from backend.app.agents.agent6_verification import run_agent6
+from backend.app.agents.agent7_multilingual import run_agent7
 
 
 # ============================================================
@@ -118,14 +119,20 @@ def agent6_self_verify(state: JABISState) -> dict:
 
 def agent7_multilingual(state: JABISState) -> dict:
     """Agent 7: 다국어 변환 (영어, 중국어)"""
-    print(f"[Agent 7] 다국어 변환 시작")
-    # TODO: LLM으로 영어/중국어 번역
+    result = run_agent7(
+        revised_copy=state.get("revised_copy", state["ad_copy"]),
+        product_type=state["product_type"],
+    )
     return {
-        "multilingual": {"en": "", "zh": ""},
+        "multilingual": result["multilingual"],
         "final_result": {
             "ad_copy": state["ad_copy"],
+            "product_type": state["product_type"],
             "risk_level": state.get("risk_level", ""),
+            "risk_summary": state.get("risk_summary", ""),
             "revised_copy": state.get("revised_copy", ""),
+            "multilingual": result["multilingual"],
+            "verification_count": state.get("verification_count", 0),
         },
     }
 
