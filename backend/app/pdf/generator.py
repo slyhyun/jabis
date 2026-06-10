@@ -26,24 +26,33 @@ _FONT_REGISTERED = False
 _FONT_NAME = "NanumGothic"
 _FONT_BOLD_NAME = "NanumGothicBold"
 
+_FONT_CANDIDATES = [
+    # 프로젝트 내 폰트 우선
+    (os.path.join(os.path.dirname(__file__), "fonts", "NanumGothic.ttf"),
+     os.path.join(os.path.dirname(__file__), "fonts", "NanumGothicBold.ttf")),
+    # macOS 시스템 폰트
+    ("/System/Library/Fonts/Supplemental/AppleGothic.ttf", None),
+    ("/System/Library/Fonts/Supplemental/NotoSansGothic-Regular.ttf", None),
+]
+
 def _register_fonts():
     global _FONT_REGISTERED, _FONT_NAME, _FONT_BOLD_NAME
     if _FONT_REGISTERED:
         return
-    font_dir = os.path.join(os.path.dirname(__file__), "fonts")
-    regular = os.path.join(font_dir, "NanumGothic.ttf")
-    bold = os.path.join(font_dir, "NanumGothicBold.ttf")
-    if os.path.exists(regular):
-        pdfmetrics.registerFont(TTFont(_FONT_NAME, regular))
-    else:
-        _FONT_NAME = "Helvetica"
-        _FONT_BOLD_NAME = "Helvetica-Bold"
-        _FONT_REGISTERED = True
-        return
-    if os.path.exists(bold):
-        pdfmetrics.registerFont(TTFont(_FONT_BOLD_NAME, bold))
-    else:
-        _FONT_BOLD_NAME = _FONT_NAME
+    for regular, bold in _FONT_CANDIDATES:
+        if os.path.exists(regular):
+            pdfmetrics.registerFont(TTFont("KoreanFont", regular))
+            _FONT_NAME = "KoreanFont"
+            if bold and os.path.exists(bold):
+                pdfmetrics.registerFont(TTFont("KoreanFontBold", bold))
+                _FONT_BOLD_NAME = "KoreanFontBold"
+            else:
+                _FONT_BOLD_NAME = "KoreanFont"
+            _FONT_REGISTERED = True
+            return
+    # 모두 없으면 Helvetica fallback
+    _FONT_NAME = "Helvetica"
+    _FONT_BOLD_NAME = "Helvetica-Bold"
     _FONT_REGISTERED = True
 
 
@@ -235,12 +244,69 @@ def _build_violations(record, styles: dict) -> list:
 
 
 # ============================================================
-# 메인 생성 함수 (표지 + 위반 항목까지)
+# 수정안 섹션
+# ============================================================
+
+def _build_revised_copy(record, styles: dict) -> list:
+    elements = [
+        PageBreak(),
+        Paragraph("수정 광고 카피", styles["section_header"]),
+        HRFlowable(width="100%", thickness=1, color=_JABIS_BLUE, spaceAfter=6),
+        Paragraph("■ 원본", styles["body_bold"]),
+        Paragraph(record.ad_copy or "", styles["body"]),
+        Spacer(1, 4 * mm),
+        Paragraph("■ 수정안", styles["body_bold"]),
+        Paragraph((record.revised_copy or "").replace("\n", "<br/>"), styles["body"]),
+        Spacer(1, 6 * mm),
+    ]
+    return elements
+
+
+# ============================================================
+# 다국어 섹션
+# ============================================================
+
+def _build_multilingual(record, styles: dict) -> list:
+    multilingual = record.multilingual or {}
+    if not multilingual:
+        return []
+
+    lang_labels = {"en": "영어 (English)", "zh": "중국어 (简体中文)"}
+    elements = [
+        Paragraph("다국어 번역본", styles["section_header"]),
+        HRFlowable(width="100%", thickness=1, color=_JABIS_BLUE, spaceAfter=6),
+    ]
+
+    for lang, label in lang_labels.items():
+        data = multilingual.get(lang, {})
+        if not data:
+            continue
+        text = data.get("text", "") if isinstance(data, dict) else str(data)
+        has_issues = data.get("has_issues", False) if isinstance(data, dict) else False
+        disclosure_preserved = data.get("disclosure_preserved", False) if isinstance(data, dict) else False
+
+        elements.append(Paragraph(f"■ {label}", styles["body_bold"]))
+        elements.append(Paragraph(text.replace("\n", "<br/>") if text else "(번역 없음)", styles["body"]))
+
+        status_parts = []
+        if has_issues:
+            status_parts.append("⚠ 문화권 이슈 있음")
+        else:
+            status_parts.append("✓ 문화권 이슈 없음")
+        status_parts.append("✓ 의무표시 보존" if disclosure_preserved else "⚠ 의무표시 미보존")
+        elements.append(Paragraph(" | ".join(status_parts), styles["small"]))
+        elements.append(Spacer(1, 4 * mm))
+
+    return elements
+
+
+# ============================================================
+# 메인 생성 함수
 # ============================================================
 
 def generate_pdf(record) -> bytes:
     """
-    PDF 심의서 생성 (표지 + 위반 항목 + 근거 조항)
+    PDF 심의서 생성 (표지 + 위반 항목 + 수정안 + 다국어)
     record: ReviewHistory ORM 객체 또는 동일한 필드를 가진 객체
     """
     _register_fonts()
@@ -258,6 +324,8 @@ def generate_pdf(record) -> bytes:
     elements = []
     elements += _build_cover(record, styles)
     elements += _build_violations(record, styles)
+    elements += _build_revised_copy(record, styles)
+    elements += _build_multilingual(record, styles)
 
     doc.build(elements)
     return buf.getvalue()
