@@ -141,6 +141,7 @@ def _make_violation(vid: str, severity: str, field: str,
     return {
         "id": vid,
         "severity": severity,
+        "source": "spec",
         "field": field,
         "advertised_value": advertised,
         "allowed_value": allowed,

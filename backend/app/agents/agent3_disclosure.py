@@ -61,6 +61,7 @@ def _make_violation(vid: str, severity: str, item: str,
     return {
         "id": vid,
         "severity": severity,
+        "source": "disclosure",
         "item": item,
         "message": message,
         "legal_basis": legal_basis,

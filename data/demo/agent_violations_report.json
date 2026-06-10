@@ -1,0 +1,193 @@
+[
+  {
+    "id": "DEMO-001",
+    "label": "예금 - 금리 초과 + 의무표시 누락",
+    "product_type": "예금",
+    "product_id": "JB-DEP-001",
+    "ad_copy": "JB 주거래 우대 정기예금 연 6.0% 확정금리! 지금 바로 가입하세요.",
+    "total_violations": 5,
+    "agent2_spec": [
+      {
+        "id": "SPEC-DEP-001",
+        "severity": "HIGH",
+        "message": "광고 금리(6.0%)가 실제 상품 최고금리(5.0%)를 초과합니다.",
+        "agent": "Agent2"
+      }
+    ],
+    "agent3_disclosure": [
+      {
+        "id": "DEP-M-001",
+        "severity": "HIGH",
+        "message": "예금성 상품 광고에는 가입조건을 반드시 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "DEP-M-003",
+        "severity": "MEDIUM",
+        "message": "이자 지급 시기 및 중도해지 시 이자 제한 사항을 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "DEP-M-004",
+        "severity": "HIGH",
+        "message": "예금자보호 여부 및 1인당 보호 한도(5천만원)를 반드시 명시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "FW-001",
+        "severity": "HIGH",
+        "message": "불확실한 사항을 확정적으로 표시하는 행위는 금지됩니다. (은행 광고심의 기준 제17조 제1호)",
+        "agent": "Agent3"
+      }
+    ]
+  },
+  {
+    "id": "DEMO-002",
+    "label": "대출 - 금리 범위 누락 + 즉시대출 과장",
+    "product_type": "대출",
+    "product_id": "JB-LOAN-001",
+    "ad_copy": "JB 직장인 신용대출 연 4.5% 저금리! 지금 바로 대출, 당일 입금 보장. 누구나 가능.",
+    "total_violations": 9,
+    "agent2_spec": [],
+    "agent3_disclosure": [
+      {
+        "id": "LOAN-M-001",
+        "severity": "HIGH",
+        "message": "대출 광고에는 금융소비자의 자격요건을 반드시 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-M-002",
+        "severity": "HIGH",
+        "message": "대출 이자율은 최저~최고 범위로 표시해야 하며, 연체이자율을 반드시 포함해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-M-003",
+        "severity": "LOW",
+        "message": "이자 부과 시기를 명시하는 것을 권장합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-M-004",
+        "severity": "MEDIUM",
+        "message": "원리금 상환방법을 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-M-005",
+        "severity": "HIGH",
+        "message": "중도상환 조건 및 수수료를 반드시 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-M-006",
+        "severity": "MEDIUM",
+        "message": "대출 관련 수수료 및 부대비용을 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-M-008",
+        "severity": "HIGH",
+        "message": "대출 자격 기준으로 '내부 심사에 따라 달라진다'는 표현은 부적합합니다. 개인신용평점 등 소비자가 대출 가능 여부를 판단할 수 있는 구체적 기준을 제시해야 합니다. (금융광고규제 가이드라인 Q&A)",
+        "agent": "Agent3"
+      },
+      {
+        "id": "LOAN-F-002",
+        "severity": "HIGH",
+        "message": "대출 실행 속도를 과장하는 표현은 금지됩니다. (금감원 지적 사례: '90초면 뚝딱')",
+        "agent": "Agent3"
+      },
+      {
+        "id": "FW-005",
+        "severity": "HIGH",
+        "message": "거짓·과장·기만적 광고는 금지됩니다. (은행 광고심의 기준 제17조 제7호)",
+        "agent": "Agent3"
+      }
+    ]
+  },
+  {
+    "id": "DEMO-003",
+    "label": "펀드 - 원금보장 표현 + 의무표시 누락",
+    "product_type": "펀드",
+    "product_id": "JB-FUND-002",
+    "ad_copy": "JB KOSPI 200 ETF 총보수 연 0.05%. 위험등급 3등급. 원금 보장! 안전한 투자.",
+    "total_violations": 5,
+    "agent2_spec": [
+      {
+        "id": "SPEC-FUND-003",
+        "severity": "HIGH",
+        "message": "펀드·ETF 광고에서 원금 보장 표현은 사용할 수 없습니다. (자본시장법 제55조)",
+        "agent": "Agent2"
+      }
+    ],
+    "agent3_disclosure": [
+      {
+        "id": "FUND-M-001",
+        "severity": "HIGH",
+        "message": "투자성 상품 광고에는 원금 손실 가능성을 반드시 명시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "FUND-M-005",
+        "severity": "MEDIUM",
+        "message": "투자 전 상품설명서·약관 확인 권유 문구를 포함해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "FUND-F-001",
+        "severity": "HIGH",
+        "message": "투자성 상품에서 원금 보장 또는 손실 없음을 표현하는 행위는 엄격히 금지됩니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "FW-005",
+        "severity": "HIGH",
+        "message": "거짓·과장·기만적 광고는 금지됩니다. (은행 광고심의 기준 제17조 제7호)",
+        "agent": "Agent3"
+      }
+    ]
+  },
+  {
+    "id": "DEMO-004",
+    "label": "카드 - 연회비 불일치 + 혜택 조건 미표시",
+    "product_type": "카드",
+    "product_id": "JB-CARD-001",
+    "ad_copy": "JB 클래식 신용카드 연회비 없음! 편의점 5% 할인. 업계 최고 혜택.",
+    "total_violations": 5,
+    "agent2_spec": [
+      {
+        "id": "SPEC-CARD-001",
+        "severity": "HIGH",
+        "message": "광고 연회비(0원)가 실제 연회비(15,000원)와 다릅니다.",
+        "agent": "Agent2"
+      }
+    ],
+    "agent3_disclosure": [
+      {
+        "id": "CARD-M-002",
+        "severity": "HIGH",
+        "message": "혜택 광고 시 전월실적, 월 한도, 적용 조건을 반드시 함께 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "CARD-M-005",
+        "severity": "HIGH",
+        "message": "신용카드 이용 시 발생할 수 있는 할부·리볼빙·연체 이자율을 표시해야 합니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "CARD-F-002",
+        "severity": "HIGH",
+        "message": "객관적 근거 없는 최상급 표현은 금지됩니다.",
+        "agent": "Agent3"
+      },
+      {
+        "id": "FW-002",
+        "severity": "HIGH",
+        "message": "객관적 근거 없는 최상급 표현은 금지됩니다. 사용 시 출처·기준일자를 명시해야 합니다. (은행 광고심의 기준 제17조 제5호)",
+        "agent": "Agent3"
+      }
+    ]
+  }
+]
