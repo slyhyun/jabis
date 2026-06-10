@@ -1,0 +1,58 @@
+[
+  {
+    "id": "DEMO-001",
+    "product_type": "예금",
+    "product_id": "JB-DEP-001",
+    "label": "예금 - 금리 초과 + 의무표시 누락",
+    "ad_copy": "JB 주거래 우대 정기예금 연 6.0% 확정금리! 지금 바로 가입하세요.",
+    "expected_violations": [
+      {"id": "SPEC-DEP-001", "reason": "광고 금리(6.0%) > 실제 최고금리(5.0%)"},
+      {"id": "FW-001",       "reason": "확정금리 — 확정적 단정 표현 금지"},
+      {"id": "DEP-M-001",    "reason": "가입조건 미표시"},
+      {"id": "DEP-M-004",    "reason": "예금자보호 한도 미표시"},
+      {"id": "DEP-M-003",    "reason": "이자 지급 시기 미표시"}
+    ]
+  },
+  {
+    "id": "DEMO-002",
+    "product_type": "대출",
+    "product_id": "JB-LOAN-001",
+    "label": "대출 - 금리 범위 누락 + 즉시대출 과장",
+    "ad_copy": "JB 직장인 신용대출 연 4.5% 저금리! 지금 바로 대출, 당일 입금 보장. 누구나 가능.",
+    "expected_violations": [
+      {"id": "LOAN-F-002",   "reason": "즉시대출 과장 표현 (당일 입금 보장)"},
+      {"id": "FW-004",       "reason": "누구나 가능 — 보편 적용 오인 표현"},
+      {"id": "LOAN-M-001",   "reason": "자격요건 미표시"},
+      {"id": "LOAN-M-002",   "reason": "금리 범위(최저~최고) 및 연체이자율 미표시"},
+      {"id": "LOAN-M-005",   "reason": "중도상환수수료 미표시"},
+      {"id": "LOAN-M-008",   "reason": "신용 수준 구체적 기준 미표시"}
+    ]
+  },
+  {
+    "id": "DEMO-003",
+    "product_type": "펀드",
+    "product_id": "JB-FUND-002",
+    "label": "펀드 - 원금보장 표현 + 의무표시 누락",
+    "ad_copy": "JB KOSPI 200 ETF 총보수 연 0.05%. 위험등급 3등급. 원금 보장! 안전한 투자.",
+    "expected_violations": [
+      {"id": "SPEC-FUND-003", "reason": "펀드에 원금보장 표현 사용"},
+      {"id": "FUND-F-001",    "reason": "원금 보장 — 투자성 상품 금지 표현"},
+      {"id": "FW-005",        "reason": "원금 보장 — 과장·기만 광고"},
+      {"id": "FUND-M-001",    "reason": "원금 손실 가능성 미표시"},
+      {"id": "FUND-M-005",    "reason": "상품설명서 확인 권유 문구 미표시"}
+    ]
+  },
+  {
+    "id": "DEMO-004",
+    "product_type": "카드",
+    "product_id": "JB-CARD-001",
+    "label": "카드 - 연회비 불일치 + 혜택 조건 미표시",
+    "ad_copy": "JB 클래식 신용카드 연회비 없음! 편의점 5% 할인. 업계 최고 혜택.",
+    "expected_violations": [
+      {"id": "SPEC-CARD-001", "reason": "연회비 0원 표시 vs 실제 15,000원"},
+      {"id": "CARD-F-002",    "reason": "업계 최고 혜택 — 근거 없는 최상급 표현"},
+      {"id": "CARD-M-002",    "reason": "혜택 조건(전월실적·월 한도) 미표시"},
+      {"id": "CARD-M-005",    "reason": "할부·리볼빙·연체이자율 미표시"}
+    ]
+  }
+]
