@@ -15,7 +15,7 @@ from mcp_servers.law_mcp.client import search_law
 CHROMA_DIR = os.getenv("CHROMA_PERSIST_DIR", "./data/chroma_db")
 COLLECTION_NAME = "jabis_regulations"
 MODEL_NAME = "jhgan/ko-sroberta-multitask"
-RAG_TOP_K = 5      # RAG에서 가져올 상위 결과 수
+RAG_TOP_K = 3      # RAG에서 가져올 상위 결과 수 (top_k=3 최적 확인)
 MCP_DISPLAY = 3    # MCP에서 가져올 법령 수
 
 # 모델/클라이언트는 최초 1회만 로드
