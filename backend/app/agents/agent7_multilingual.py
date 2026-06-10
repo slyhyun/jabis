@@ -13,7 +13,10 @@ _client = None
 def _get_client() -> OpenAI:
     global _client
     if _client is None:
-        _client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        _client = OpenAI(
+            api_key=os.getenv("GEMINI_API_KEY"),
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
     return _client
 
 
@@ -111,7 +114,7 @@ def _translate(korean_copy: str, lang: str) -> str:
     try:
         client = _get_client()
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=os.getenv("LLM_MODEL", "gemini-2.0-flash"),
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
             max_tokens=600,
@@ -131,7 +134,7 @@ def _culture_check(translated: str, lang: str) -> dict:
         import json
         client = _get_client()
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=os.getenv("LLM_MODEL", "gemini-2.0-flash"),
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
             max_tokens=300,
