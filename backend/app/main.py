@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
+from backend.app.api.review import router as review_router
+
 load_dotenv()
 
 app = FastAPI(
@@ -18,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(review_router)
 
 
 @app.get("/")
