@@ -60,6 +60,8 @@
       "item": "이벤트·프로모션_조건_명시",
       "legal_basis": "은행 광고심의 기준 제18조 제3호",
       "description": "이벤트·특판·프로모션 등 부수 혜택 광고 시 대상, 자격요건, 기간, 내용을 함께 안내해야 함",
+      "conditional": true,
+      "condition_trigger": ["이벤트", "프로모션", "특판", "한정"],
       "check_keywords": ["이벤트", "프로모션", "특판", "기간", "한정"],
       "severity": "MEDIUM",
       "violation_message": "이벤트·프로모션 광고 시 대상, 자격요건, 기간, 내용을 함께 명시해야 합니다."
