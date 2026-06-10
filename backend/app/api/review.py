@@ -149,3 +149,98 @@ def get_review(review_id: int, db: Session = Depends(get_db)):
     if not record:
         raise HTTPException(status_code=404, detail=f"심의 이력 {review_id}를 찾을 수 없습니다.")
     return _record_to_response(record)
+
+
+# ============================================================
+# 핵심 엔드포인트
+# ============================================================
+
+@router.post("", response_model=ReviewResponse)
+def create_review(request: ReviewRequest, db: Session = Depends(get_db)):
+    """광고 카피 심의 요청 — LangGraph 워크플로우 실행"""
+    try:
+        from backend.app.workflow.graph import jabis_graph
+        result = jabis_graph.invoke({
+            "ad_copy": request.ad_copy,
+            "product_type": request.product_type,
+            "product_id": request.product_id,
+            "verification_count": 0,
+            "is_verified": False,
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"심의 워크플로우 오류: {str(e)}")
+
+    try:
+        record = _save_review(db, request, result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"DB 저장 오류: {str(e)}")
+
+    return _record_to_response(record)
+
+
+@router.post("/{review_id}/decision", response_model=DecisionResponse)
+def set_decision(review_id: int, body: DecisionRequest, db: Session = Depends(get_db)):
+    """승인 / 반려 / 보류 결정"""
+    valid = {s.value for s in ReviewStatus}
+    if body.decision not in valid:
+        raise HTTPException(status_code=400, detail=f"decision은 {valid} 중 하나여야 합니다.")
+
+    record = db.query(ReviewHistory).filter(ReviewHistory.id == review_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail=f"심의 이력 {review_id}를 찾을 수 없습니다.")
+
+    record.review_status = body.decision
+    db.commit()
+
+    label = {"APPROVED": "승인", "REJECTED": "반려", "PENDING": "보류"}.get(body.decision, body.decision)
+    return DecisionResponse(
+        review_id=review_id,
+        review_status=body.decision,
+        message=f"심의 이력 {review_id}이 {label} 처리되었습니다.",
+    )
+
+
+@router.post("/{review_id}/translate", response_model=dict)
+def translate_review(review_id: int, db: Session = Depends(get_db)):
+    """다국어 변환 — 박팀장 선택 시 Agent 7 호출"""
+    record = db.query(ReviewHistory).filter(ReviewHistory.id == review_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail=f"심의 이력 {review_id}를 찾을 수 없습니다.")
+
+    try:
+        from backend.app.agents.agent7_multilingual import run_agent7
+        result = run_agent7(
+            revised_copy=record.revised_copy or record.ad_copy,
+            product_type=record.product_type or "",
+        )
+        multilingual = result["multilingual"]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"다국어 변환 오류: {str(e)}")
+
+    record.multilingual = multilingual
+    db.commit()
+
+    return {"review_id": review_id, "multilingual": multilingual}
+
+
+@router.get("/{review_id}/pdf")
+def download_pdf(review_id: int, db: Session = Depends(get_db)):
+    """PDF 심의서 다운로드"""
+    record = db.query(ReviewHistory).filter(ReviewHistory.id == review_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail=f"심의 이력 {review_id}를 찾을 수 없습니다.")
+
+    try:
+        from backend.app.pdf.generator import generate_pdf
+        from fastapi.responses import StreamingResponse
+        import io
+        pdf_bytes = generate_pdf(record)
+        return StreamingResponse(
+            io.BytesIO(pdf_bytes),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=jabis_review_{review_id}.pdf"},
+        )
+    except ImportError:
+        raise HTTPException(status_code=503, detail="PDF 생성 모듈이 아직 준비되지 않았습니다.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF 생성 오류: {str(e)}")
